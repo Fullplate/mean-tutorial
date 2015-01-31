@@ -5,6 +5,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// ***
+// MongoDB via mongoose
+// ***
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/news'); // 'news' database on local Mongo server
+// schemas
+require('./models/Posts');
+require('./models/Comments');
+
+// routes
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -55,6 +65,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
 
 module.exports = app;
