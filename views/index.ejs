@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>My First Angular App, Lol!</title>
+    <title>My First Angular App!</title>
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 
@@ -13,25 +13,9 @@
     <style> .glyphicon-thumbs-up { cursor: pointer } </style>
 </head>
 <body ng-app="flapperNews">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <ui-view></ui-view>
-        </div>
+    <div class="col-md-6 col-md-offset-3">
+        <ui-view></ui-view>
     </div>
-
-    <!-- OLD FORM, NEED TO REDO...GUIDE SHOULD DO IT
-    <form ng-submit="addPost()" style="margin-top:30px;">
-        <h3>Add a new post</h3>
-
-        <div class="form-group">
-            <input type="text" class="form-control" placeholder="Title" ng-model="title" />
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" placeholder="Link" ng-model="link" />
-        </div>
-        <button type="submit" class="btn btn-primary">Post!</button>
-    </form>
-    -->
 
     <script type="text/ng-template" id="/home.html">
         <div class="page-header">
@@ -53,12 +37,24 @@
                     {{post.title}}
                 </span>
             </span>
-            <!-- comments link, #-sign links to current page and runs javascript (or something like that)
-            then {id} is generated using $index, which is auto-generated when using ng-repeat -->
+            <!-- comments link, '#/posts/' is the fragment identifier. We use the ._id from the database,
+            and handle that url through our url routing -->
             <span>
-                <a href="#/posts/{{$index}}">Comments</a>
+                <a href="#/posts/{{post._id}}">Comments</a>
             </span>
         </div>
+
+        <form ng-submit="addPost()" style="margin-top:30px;">
+            <h3>Add a new post</h3>
+
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Title" ng-model="title" />
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Link" ng-model="link" />
+            </div>
+            <button type="submit" class="btn btn-primary">Post!</button>
+        </form>
     </script>
 
     <script type="text/ng-template" id="/posts.html">
