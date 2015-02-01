@@ -8,7 +8,7 @@
 
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
-    <script src="/javascripts/angularApp.js"></script>
+    <script src="/javascripts/angularApp.js"></script> <!-- working dir is /public -->
 
     <style> .glyphicon-thumbs-up { cursor: pointer } </style>
 </head>
@@ -23,8 +23,9 @@
         </div>
 
         <div ng-repeat="post in posts | orderBy: '-upvotes'">
-            <!-- upvotes -->
+            <!-- upvote/downvote -->
             <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(post)"></span>
+            <span class="glyphicon glyphicon-thumbs-down" ng-click="decrementUpvotes(post)"></span>
             {{post.upvotes}}
             <!-- title w/ optional link -->
             <span style="font-size:20px; margin-left:10px;">
@@ -40,7 +41,7 @@
             <!-- comments link, '#/posts/' is the fragment identifier. We use the ._id from the database,
             and handle that url through our url routing -->
             <span>
-                <a href="#/posts/{{post._id}}">Comments</a>
+                <a href="#/posts/{{post._id}}">comments ({{post.comments.length}})</a>
             </span>
         </div>
 
@@ -74,20 +75,32 @@
         <!-- loop through each comment in comments property of post, displaying upvotes/author/body -->
         <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
             <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(comment)"></span>
+            <span class="glyphicon glyphicon-thumbs-down" ng-click="decrementUpvotes(comment)"></span>
             {{comment.upvotes}} - by {{comment.author}}
             <span style="font-size:20px; margin-left:10px;">
                 {{comment.body}}
             </span>
         </div>
+        <br>
 
-        <form ng-submit="addComment()" style="margin-top:30px;">
-            <h3>Add a new comment :)</h3>
+        <!-- if !commentUiVisible, display the "show" button -->
+        <div ng-hide="commentUiVisible">
+            <button ng-click="showNewCommentUi()" class="btn">Show comment UI</button>
+        </div>
+        <!-- if commentUiVisible, display the "hide" button and the form -->
+        <div ng-show="commentUiVisible">
+            <button ng-click="hideNewCommentUi()" class="btn">Hide comment UI</button>
 
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Comment" ng-model="body" />
-            </div>
-            <button type="submit" class="btn btn-primary">Post</button>
-        </form>
+            <form ng-submit="addComment()" style="margin-top:30px;">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Comment" ng-model="body" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Author" ng-model="author" />
+                </div>
+                <button type="submit" class="btn btn-primary">Post</button>
+            </form>
+        </div>
     </script>
 
 </body>

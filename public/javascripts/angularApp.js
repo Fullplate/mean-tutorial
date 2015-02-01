@@ -61,6 +61,14 @@ angular.module('flapperNews', ['ui.router'])
                 });
         };
 
+        /* PUT /posts/:post/downvote */
+        o.downvote = function(post) {
+            return $http.put('/posts/' + post._id + '/downvote')
+                .success(function(data) {
+                    post.upvotes -=1;
+                });
+        };
+
         /* GET /posts/:post */
         o.get = function(id) {
             // using .then(function...) creates a promise
@@ -71,14 +79,22 @@ angular.module('flapperNews', ['ui.router'])
 
         /* POST /posts/:post/comments */
         o.addComment = function(id, comment) {
-            return $http.post('/posts/' + id + "/comments", comment);
+            return $http.post('/posts/' + id + '/comments', comment);
         };
 
         /* PUT /posts/:post/comments/:comment/upvote */
         o.upvoteComment = function(post, comment) {
-            return $http.put('/posts/' + post._id + "/comments/" + comment._id + '/upvote')
+            return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/upvote')
                 .success(function(data) {
                     comment.upvotes += 1;
+                });
+        };
+
+        /* PUT /posts/:post/comments/:comment/downvote */
+        o.downvoteComment = function(post, comment) {
+            return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/downvote')
+                .success(function(data) {
+                    comment.upvotes -= 1;
                 });
         };
 
@@ -106,6 +122,10 @@ angular.module('flapperNews', ['ui.router'])
             $scope.incrementUpvotes = function(post) {
                 posts.upvote(post);
             };
+
+            $scope.decrementUpvotes = function(post) {
+                posts.downvote(post);
+            };
         }])
     .controller('PostsCtrl', [
         '$scope',
@@ -115,11 +135,21 @@ angular.module('flapperNews', ['ui.router'])
             $scope.post = post; // add post to our 2-way-binding so it's accessible in view
                                 // and any changes we make to it appear immediately
 
+            $scope.commentUiVisible = false;
+
+            $scope.showNewCommentUi = function() {
+                $scope.commentUiVisible = true;
+            };
+
+            $scope.hideNewCommentUi = function() {
+                $scope.commentUiVisible = false;
+            };
+
             $scope.addComment = function() {
                 if ($scope.body === '') { return; }
                 posts.addComment(post._id, {
                     body: $scope.body,
-                    author: 'user'
+                    author: $scope.author || "anon"
                 }).success(function(comment) {
                     $scope.post.comments.push(comment);
                 });
@@ -128,6 +158,10 @@ angular.module('flapperNews', ['ui.router'])
 
             $scope.incrementUpvotes = function(comment) {
                 posts.upvoteComment(post, comment);
+            };
+
+            $scope.decrementUpvotes = function(comment) {
+                posts.downvoteComment(post, comment);
             };
         }
     ]);

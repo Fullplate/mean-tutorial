@@ -10,13 +10,11 @@ var bodyParser = require('body-parser');
 // ***
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/news'); // 'news' database on local Mongo server
-// schemas
 require('./models/Posts');
 require('./models/Comments');
 
 // routes
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -33,7 +31,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
